@@ -5,14 +5,14 @@
 
 #include "base_day.h"
 
-struct day_object
+struct aoc_day
 {
-	std::unique_ptr<base_day> obj;
+	std::unique_ptr<base_day> processor;
 	int year;
 	int day;
 };
 
-inline std::vector<day_object> days;
+inline std::vector<aoc_day> days;
 
 // https://youtu.be/0a3wjaeP6eQ
 template<typename T>
