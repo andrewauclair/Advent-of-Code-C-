@@ -130,11 +130,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2015.cpp" />
+    <ClCompile Include="2016.cpp" />
+    <ClCompile Include="2017.cpp" />
+    <ClCompile Include="2018.cpp" />
+    <ClCompile Include="2019.cpp" />
+    <ClCompile Include="2020.cpp" />
+    <ClCompile Include="2021.cpp" />
+    <ClCompile Include="2022.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2015.h" />
+    <ClInclude Include="2016.h" />
+    <ClInclude Include="2017.h" />
+    <ClInclude Include="2018.h" />
+    <ClInclude Include="2019.h" />
+    <ClInclude Include="2020.h" />
+    <ClInclude Include="2021.h" />
+    <ClInclude Include="2022.h" />
     <ClInclude Include="base_day.h" />
     <ClInclude Include="register.h" />
     <ClInclude Include="utils.h" />

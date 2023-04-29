@@ -30,9 +30,5 @@ struct Init
 
 
 #define REGISTER_DAY(DayType, year, day) \
-	static constexpr auto funcName = __func__; \
-	constexpr auto fn = []() { \
-		std::cout << "register: " << year << " " << day << '\n'; \
-		days.push_back({ std::make_unique< DayType >(), year, day }); \
-	}; \
+	constexpr auto fn = []() { days.push_back({ std::make_unique< DayType >(), year, day }); }; \
 	(void)&Init<decltype(fn)>::inst;
