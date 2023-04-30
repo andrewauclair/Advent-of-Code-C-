@@ -1,7 +1,7 @@
 #include "2017.h"
 #include "utils.h"
 
-bool _2017_1::part1()
+bool aoc_2017_1::part1()
 {
 	auto file = open_input_file(2017, 1);
 
@@ -29,7 +29,7 @@ bool _2017_1::part1()
 	return sum == 1223;
 }
 
-bool _2017_1::part2()
+bool aoc_2017_1::part2()
 {
 	auto file = open_input_file(2017, 1);
 

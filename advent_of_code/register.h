@@ -29,6 +29,9 @@ struct Init
 };
 
 
-#define REGISTER_DAY(DayType, year, day) \
-	constexpr auto fn = []() { days.push_back({ std::make_unique< DayType >(), year, day }); }; \
-	(void)&Init<decltype(fn)>::inst;
+#define REGISTER_DAY(year, day) \
+	void register_day() const \
+	{ \
+		constexpr auto fn = []() { days.push_back({ std::make_unique<aoc_##year##_##day>(), year, day }); }; \
+		(void)&Init<decltype(fn)>::inst; \
+	}

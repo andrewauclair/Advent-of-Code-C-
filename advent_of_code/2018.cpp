@@ -3,7 +3,7 @@
 #include <numeric>
 #include <set>
 
-bool _2018_1::part1()
+bool aoc_2018_1::part1()
 {
 	auto file = open_input_file(2018, 1);
 
@@ -21,7 +21,7 @@ bool _2018_1::part1()
 	return total == 518;
 }
 
-bool _2018_1::part2()
+bool aoc_2018_1::part2()
 {
 	auto file = open_input_file(2018, 1);
 

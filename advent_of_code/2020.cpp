@@ -3,14 +3,12 @@
 #include <istream>
 #include <algorithm>
 
-bool _2020_1::part1()
+bool aoc_2020_1::part1()
 {
 	auto file = open_input_file(2020, 1);
 
-	std::vector<int> expenses;
-
-	std::copy(std::istream_iterator<int>(file), std::istream_iterator<int>(), std::back_inserter(expenses));
-
+	std::vector<int> expenses = read_as<int>(file);;
+	
 	std::sort(expenses.rbegin(), expenses.rend());
 
 	for (int i = 0; i < expenses.size(); i++)
@@ -28,14 +26,12 @@ bool _2020_1::part1()
 	return false;
 }
 
-bool _2020_1::part2()
+bool aoc_2020_1::part2()
 {
 	auto file = open_input_file(2020, 1);
 
-	std::vector<int> expenses;
-
-	std::copy(std::istream_iterator<int>(file), std::istream_iterator<int>(), std::back_inserter(expenses));
-
+	std::vector<int> expenses = read_as<int>(file);
+	
 	std::sort(expenses.rbegin(), expenses.rend());
 
 	for (int i = 0; i < expenses.size(); i++)

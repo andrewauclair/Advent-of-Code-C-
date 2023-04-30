@@ -5,4 +5,4 @@
 
 #include <iostream>
 
-struct _2016_1 : base_day { void register_day() { REGISTER_DAY(_2016_1, 2016, 1) };  bool part1() override; bool part2() override; };
+struct aoc_2016_1 : base_day { REGISTER_DAY(2016, 1) bool part1() override; bool part2() override; };

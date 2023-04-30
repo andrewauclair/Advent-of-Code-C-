@@ -2,7 +2,7 @@
 #include "utils.h"
 #include <array>
 
-bool _2021_1::part1()
+bool aoc_2021_1::part1()
 {
 	auto file = open_input_file(2021, 1);
 
@@ -28,7 +28,7 @@ bool _2021_1::part1()
 	return depth_increases == 1195;
 }
 
-bool _2021_1::part2()
+bool aoc_2021_1::part2()
 {
 	auto file = open_input_file(2021, 1);
 

@@ -9,7 +9,7 @@ namespace
 
 		while (mass > 0)
 		{
-			const int fuel = std::floor(mass / 3.0) - 2;
+			const int fuel = static_cast<int>(std::floor(mass / 3.0)) - 2;
 
 			if (fuel < 0)
 			{
@@ -24,7 +24,7 @@ namespace
 	}
 }
 
-bool _2019_1::part1()
+bool aoc_2019_1::part1()
 {
 	auto file = open_input_file(2019, 1);
 
@@ -39,15 +39,15 @@ bool _2019_1::part1()
 
 	int total_fuel = 0;
 
-	for (int module_mass : module_masses)
+	for (const int module_mass : module_masses)
 	{
-		total_fuel += std::floor(module_mass / 3.0) - 2;
+		total_fuel += static_cast<int>(std::floor(module_mass / 3.0)) - 2;
 	}
 
 	return total_fuel == 3268951;
 }
 
-bool _2019_1::part2()
+bool aoc_2019_1::part2()
 {
 	auto file = open_input_file(2019, 1);
 
@@ -62,7 +62,7 @@ bool _2019_1::part2()
 
 	int total_fuel = 0;
 
-	for (int module_mass : module_masses)
+	for (const int module_mass : module_masses)
 	{
 		total_fuel += fuel_required(module_mass);
 	}

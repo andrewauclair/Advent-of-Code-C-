@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-bool _2015_1::part1()
+bool aoc_2015_1::part1()
 {
 	auto file = open_input_file(2015, 1);
 
@@ -20,7 +20,7 @@ bool _2015_1::part1()
 	return floor == 280;
 }
 
-bool _2015_1::part2()
+bool aoc_2015_1::part2()
 {
 	auto file = open_input_file(2015, 1);
 

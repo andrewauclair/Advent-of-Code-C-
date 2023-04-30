@@ -26,7 +26,7 @@ namespace
 	};
 }
 
-bool _2016_1::part1()
+bool aoc_2016_1::part1()
 {
 	auto file = open_input_file(2016, 1);
 
@@ -111,7 +111,7 @@ bool _2016_1::part1()
 	return answer == 253;
 }
 
-bool _2016_1::part2()
+bool aoc_2016_1::part2()
 {
 	auto file = open_input_file(2016, 1);
 
