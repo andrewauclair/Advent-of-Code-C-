@@ -29,9 +29,13 @@ struct Init
 };
 
 
-#define REGISTER_DAY(year, day) \
-	void register_day() const \
-	{ \
-		constexpr auto fn = []() { days.push_back({ std::make_unique<aoc_##year##_##day>(), year, day }); }; \
-		(void)&Init<decltype(fn)>::inst; \
-	}
+#define CONFIGURE_AOC_DAY(year, day) \
+	struct aoc_##year##_##day : base_day { \
+		void register_day() const \
+		{ \
+			constexpr auto fn = []() { days.push_back({ std::make_unique<aoc_##year##_##day>(), year, day }); }; \
+			(void)&Init<decltype(fn)>::inst; \
+		} \
+		bool part1() override; \
+		bool part2() override; \
+	};
