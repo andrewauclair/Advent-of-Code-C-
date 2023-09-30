@@ -208,7 +208,6 @@ bool aoc_2015_3::part2()
 			break;
 		}
 		visited_positions.insert(current_pos);
-		
 	}
 
 	return visited_positions.size() == 2360;
