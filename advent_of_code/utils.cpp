@@ -17,19 +17,3 @@ std::fstream open_input_file(int year, int day)
 
 	return input;
 }
-
-std::vector<std::string> split_string(const std::string& str, char delim)
-{
-	std::vector<std::string> strs;
-
-	std::stringstream ss(str);
-
-	std::string item;
-
-	while (std::getline(ss, item, delim))
-	{
-		strs.push_back(item);
-	}
-
-	return strs;
-}
