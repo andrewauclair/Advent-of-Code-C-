@@ -97,6 +97,7 @@ int main()
 
 	int year = 0;
 	int days_output = 25;
+	int current_day = 1;
 
 	for (auto&& problem : days)
 	{
@@ -115,6 +116,19 @@ int main()
 			std::cout << ' ' << static_cast<char>(179);
 		}
 		days_output++;
+
+		if (problem.day - current_day > 1)
+		{
+			
+
+			for (int i = current_day; i < problem.day - 1; i++)
+			{
+				days_output++;
+				std::cout << "  " << static_cast<char>(179);
+			}
+		}
+
+		current_day = problem.day;
 
 		const bool passed_part1 = problem.processor->part1();
 		const bool passed_part2 = problem.processor->part2();

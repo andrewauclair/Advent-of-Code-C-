@@ -215,3 +215,53 @@ bool aoc_2016_1::part2()
 
 	return answer == 126;
 }
+
+bool aoc_2016_3::part1()
+{
+	auto file = open_input_file(2016, 3);
+
+	const std::vector<int> triangles = read_as<int>(file);
+
+	int valid_triangles = 0;
+
+	for (int i = 0; i < triangles.size(); i += 3)
+	{
+		const int a = triangles[i];
+		const int b = triangles[i + 1];
+		const int c = triangles[i + 2];
+
+		if ((a + b > c) && (b + c > a) && (c + a > b))
+		{
+			++valid_triangles;
+		}
+	}
+
+	return valid_triangles == 917;
+}
+
+bool aoc_2016_3::part2()
+{
+	auto file = open_input_file(2016, 3);
+
+	const std::vector<int> triangles = read_as<int>(file);
+
+	auto it = triangles.begin();
+
+	int valid_triangles = 0;
+
+	for (int i = 0; i < triangles.size(); i += 9)
+	{
+		const auto count = [&](int a, int b, int c) {
+			if ((a + b > c) && (b + c > a) && (c + a > b))
+			{
+				++valid_triangles;
+			}
+		};
+
+		count(triangles[i], triangles[i + 3], triangles[i + 6]);
+		count(triangles[i + 1], triangles[i + 4], triangles[i + 7]);
+		count(triangles[i + 2], triangles[i + 5], triangles[i + 8]);
+	}
+
+	return valid_triangles == 1649;
+}
