@@ -2,6 +2,7 @@
 #include "utils.h"
 
 #include <iostream>
+#include <set>
 
 bool aoc_2015_1::part1()
 {
@@ -120,4 +121,95 @@ bool aoc_2015_2::part2()
 	}
 
 	return total_ribbon == 3842356;
+}
+
+bool aoc_2015_3::part1()
+{
+	auto file = open_input_file(2015, 3);
+
+	std::string input;
+	file >> input;
+
+	struct position {
+		int x = 0;
+		int y = 0;
+
+		auto operator<=>(const position&) const = default;
+	};
+
+	std::set<position> visited_positions;
+
+	position current_pos;
+	visited_positions.insert(current_pos);
+
+	for (char ch : input)
+	{
+		switch (ch)
+		{
+		case '^':
+			--current_pos.y;
+			break;
+		case '<':
+			--current_pos.x;
+			break;
+		case '>':
+			++current_pos.x;
+			break;
+		case 'v':
+			++current_pos.y;
+			break;
+		}
+		visited_positions.insert(current_pos);
+	}
+
+	return visited_positions.size() == 2592;
+}
+
+bool aoc_2015_3::part2()
+{
+	auto file = open_input_file(2015, 3);
+
+	std::string input;
+	file >> input;
+
+	struct position {
+		int x = 0;
+		int y = 0;
+
+		auto operator<=>(const position&) const = default;
+	};
+
+	std::set<position> visited_positions;
+
+	position santa_current_pos;
+	position robot_santa_current_pos;
+	visited_positions.insert(santa_current_pos);
+
+	bool santas_turn = true;
+
+	for (char ch : input)
+	{
+		position& current_pos = santas_turn ? santa_current_pos : robot_santa_current_pos;
+		santas_turn = !santas_turn;
+
+		switch (ch)
+		{
+		case '^':
+			--current_pos.y;
+			break;
+		case '<':
+			--current_pos.x;
+			break;
+		case '>':
+			++current_pos.x;
+			break;
+		case 'v':
+			++current_pos.y;
+			break;
+		}
+		visited_positions.insert(current_pos);
+		
+	}
+
+	return visited_positions.size() == 2360;
 }
