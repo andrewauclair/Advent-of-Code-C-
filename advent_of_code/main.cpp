@@ -99,9 +99,13 @@ int main()
 	int days_output = 25;
 	int current_day = 1;
 
+	int max_stars = 0;
+
 	for (auto&& problem : days)
 	{
 		if (problem.year != year) {
+			max_stars += 50;
+
 			for (int i = days_output; i < 25; i++) {
 				std::cout << "  " << static_cast<char>(179);
 			}
@@ -132,9 +136,6 @@ int main()
 
 		const bool passed_part1 = problem.processor->part1();
 		const bool passed_part2 = problem.processor->part2();
-
-		//std::cout << std::format("{}/{}/1: {}", problem.year, problem.day, passed_part1 ? "pass" : "fail!!") << '\n';
-		//std::cout << std::format("{}/{}/2: {}", problem.year, problem.day, passed_part2 ? "pass" : "fail!!") << '\n';
 
 		if (passed_part1)
 		{
@@ -170,5 +171,5 @@ int main()
 	}
 	std::cout << static_cast<char>(217);
 
-	std::cout << "\n\n" << "total stars: " << stars;
+	std::cout << "\n\n" << "total stars: " << stars << " / " << max_stars << std::endl;
 }
