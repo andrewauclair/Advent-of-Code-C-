@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include <array>
 
 namespace
 {
@@ -214,6 +215,96 @@ bool aoc_2016_1::part2()
 	const int answer = std::abs(current_position.x) + std::abs(current_position.y);
 
 	return answer == 126;
+}
+
+bool aoc_2016_2::part1()
+{
+	auto file = open_input_file(2016, 2);
+
+	const std::vector<std::string> lines = read_lines(file);
+
+	const std::array<std::array<int, 3>, 3> buttons{ { 
+		{1, 2, 3}, 
+		{4, 5, 6}, 
+		{7, 8, 9} 
+	} };
+
+	int x = 1;
+	int y = 1;
+
+	std::vector<int> button_presses;
+
+	for (std::string_view instruction : lines)
+	{
+		for (char ch : instruction)
+		{
+			switch (ch)
+			{
+			case 'U': // up
+				if (y > 0) --y;
+				break;
+			case 'D': // down
+				if (y < 2) ++y;
+				break;
+			case 'L': // left
+				if (x > 0) --x;
+				break;
+			case 'R': // right
+				if (x < 2) ++x;
+				break;
+			}
+		}
+		button_presses.push_back(buttons.at(y).at(x));
+	}
+
+	// 61529
+	return button_presses == std::vector<int>{6, 1, 5, 2, 9};
+}
+
+bool aoc_2016_2::part2()
+{
+	auto file = open_input_file(2016, 2);
+
+	const std::vector<std::string> lines = read_lines(file);
+
+	const std::array<std::array<char, 5>, 5> buttons{ {
+		{ ' ', ' ', '1', ' ', ' ' },
+		{ ' ', '2', '3', '4', ' ' },
+		{ '5', '6', '7', '8', '9' },
+		{ ' ', 'A', 'B', 'C', ' ' },
+		{ ' ', ' ', 'D', ' ', ' ' }
+	} };
+
+	int x = 0;
+	int y = 2;
+
+	std::string buttons_pressed;
+
+	for (std::string_view instruction : lines)
+	{
+		for (char ch : instruction)
+		{
+			switch (ch)
+			{
+			case 'U': // up
+				if (y > 0 && buttons.at(y - 1).at(x) != ' ') --y;
+				break;
+			case 'D': // down
+				if (y < 4 && buttons.at(y + 1).at(x) != ' ') ++y;
+				break;
+			case 'L': // left
+				if (x > 0 && buttons.at(y).at(x - 1) != ' ') --x;
+				break;
+			case 'R': // right
+				if (x < 4 && buttons.at(y).at(x + 1) != ' ') ++x;
+				break;
+			}
+		}
+
+		buttons_pressed += buttons.at(y).at(x);
+	}
+	
+	return buttons_pressed == "C2C28";
 }
 
 bool aoc_2016_3::part1()

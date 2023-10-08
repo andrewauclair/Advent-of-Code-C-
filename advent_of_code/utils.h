@@ -7,6 +7,18 @@
 
 std::fstream open_input_file(int year, int day);
 
+inline std::vector<std::string> read_lines(std::fstream& in)
+{
+	std::vector<std::string> lines;
+	std::string line;
+
+	while (std::getline(in, line))
+	{
+		lines.push_back(line);
+	}
+	return lines;
+}
+
 template<typename T>
 std::vector<T> read_as(std::fstream& in)
 {
