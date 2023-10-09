@@ -58,3 +58,79 @@ bool aoc_2021_1::part2()
 
 	return depth_increases == 1235;
 }
+
+bool aoc_2021_2::part1()
+{
+	auto file = open_input_file(2021, 2);
+
+	const std::vector<std::string> lines = read_lines(file);
+
+	int horizontal_pos = 0;
+	int depth = 0;
+
+	for (const std::string& line : lines)
+	{
+		if (line.starts_with("forward"))
+		{
+			int move;
+			std::sscanf(line.c_str(), "forward %d", &move);
+
+			horizontal_pos += move;
+		}
+		else if (line.starts_with("down"))
+		{
+			int move;
+			std::sscanf(line.c_str(), "down %d", &move);
+
+			depth += move;
+		}
+		else if (line.starts_with("up"))
+		{
+			int move;
+			std::sscanf(line.c_str(), "up %d", &move);
+
+			depth -= move;
+		}
+	}
+
+	return (horizontal_pos * depth) == 1746616;
+}
+
+bool aoc_2021_2::part2()
+{
+	auto file = open_input_file(2021, 2);
+
+	const std::vector<std::string> lines = read_lines(file);
+
+	int horizontal_pos = 0;
+	int depth = 0;
+	int aim = 0;
+
+	for (const std::string& line : lines)
+	{
+		if (line.starts_with("forward"))
+		{
+			int move;
+			std::sscanf(line.c_str(), "forward %d", &move);
+
+			horizontal_pos += move;
+			depth += move * aim;
+		}
+		else if (line.starts_with("down"))
+		{
+			int move;
+			std::sscanf(line.c_str(), "down %d", &move);
+
+			aim += move;
+		}
+		else if (line.starts_with("up"))
+		{
+			int move;
+			std::sscanf(line.c_str(), "up %d", &move);
+
+			aim -= move;
+		}
+	}
+	
+	return (horizontal_pos * depth) == 1741971043;
+}
