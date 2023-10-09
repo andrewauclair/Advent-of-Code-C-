@@ -59,3 +59,61 @@ bool aoc_2017_1::part2()
 
 	return sum == 1284;
 }
+
+bool aoc_2017_2::part1()
+{
+	auto file = open_input_file(2017, 2);
+
+	const std::vector<std::string> lines = read_lines(file);
+
+	int checksum = 0;
+
+	for (const std::string& line : lines)
+	{
+		const std::vector<int> values = read_as<int>(line);
+
+		int lowest = std::numeric_limits<int>::max();
+		int highest = std::numeric_limits<int>::min();
+
+		for (int value : values)
+		{
+			lowest = std::min(lowest, value);
+			highest = std::max(highest, value);
+		}
+
+		checksum += highest - lowest;
+	}
+
+	// 47623
+	return checksum == 47623;
+}
+
+bool aoc_2017_2::part2()
+{
+	auto file = open_input_file(2017, 2);
+
+	const std::vector<std::string> lines = read_lines(file);
+
+	int total = 0;
+
+	for (const std::string& line : lines)
+	{
+		const std::vector<int> values = read_as<int>(line);
+
+		for (int i = 0; i < values.size(); i++)
+		{
+			for (int j = i + 1; j < values.size(); j++)
+			{
+				int min = std::min(values[i], values[j]);
+				int max = std::max(values[i], values[j]);
+
+				if (max % min == 0)
+				{
+					total += max / min;
+				}
+			}
+		}
+	}
+	
+	return total == 312;
+}

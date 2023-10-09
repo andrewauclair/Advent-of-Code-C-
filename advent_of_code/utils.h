@@ -23,8 +23,25 @@ template<typename T>
 std::vector<T> read_as(std::fstream& in)
 {
 	std::vector<T> values;
-	std::copy(std::istream_iterator<int>(in), std::istream_iterator<int>(), std::back_inserter(values));
+	std::copy(std::istream_iterator<T>(in), std::istream_iterator<T>(), std::back_inserter(values));
 
+	return values;
+}
+
+template<typename T>
+std::vector<T> read_as(std::string in)
+{
+	auto input = std::istringstream(in);
+
+	std::vector<T> values;
+
+	T value;
+
+	while (input >> value)
+	{
+		values.push_back(value);
+	}
+	
 	return values;
 }
 
