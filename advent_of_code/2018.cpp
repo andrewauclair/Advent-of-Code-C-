@@ -1,7 +1,7 @@
 #include "2018.h"
 #include "utils.h"
 #include <numeric>
-#include <set>
+#include <unordered_set>
 
 bool aoc_2018_1::part1()
 {
@@ -34,7 +34,7 @@ bool aoc_2018_1::part2()
 		frequencies.push_back(freq);
 	}
 
-	std::set<int> reached;
+	std::unordered_set<int> reached;
 
 	int total = 0;
 	bool found = false;
