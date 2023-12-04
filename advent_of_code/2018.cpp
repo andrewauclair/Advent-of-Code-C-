@@ -138,3 +138,54 @@ bool aoc_2018_2::part2()
 	
 	return answer == "jbbenqtlaxhivmwyscjukztdp";
 }
+
+bool aoc_2018_3::part1()
+{
+	auto file = open_input_file(2018, 3);
+
+	struct claim {
+		int claim_number;
+		int left_edge;
+		int right_edge;
+		int width;
+		int height;
+	};
+
+	const auto claims = [&file]() -> std::vector<claim> {
+		const std::vector<std::string> lines = read_lines(file);
+
+		int claim_number;
+		int left_edge;
+		int right_edge;
+		int width;
+		int height;
+
+		std::vector<claim> claims;
+
+		for (auto&& line : lines)
+		{
+			std::sscanf(line.c_str(), "#%d @ %d,%d: %dx%d", &claim_number, &left_edge, &right_edge, &width, &height);
+
+			claims.emplace_back(claim_number, left_edge, right_edge, width, height);
+		}
+
+		return claims;
+	}();
+
+	std::vector<short> counts;
+	counts.resize(1000 * 1000);
+
+	for (auto&& claim : claims)
+	{
+
+	}
+
+	return false;
+}
+
+bool aoc_2018_3::part2()
+{
+	auto file = open_input_file(2018, 3);
+
+	return false;
+}

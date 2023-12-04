@@ -1,6 +1,8 @@
 #include "2019.h"
 #include "utils.h"
 
+#include <algorithm>
+
 namespace
 {
 	int fuel_required(int mass)
@@ -382,4 +384,38 @@ bool aoc_2019_5::part2()
 	auto computer = IntcodeComputer(file);
 
 	return computer.run({ 5 }) == 918655;
+}
+
+bool aoc_2019_7::part1()
+{
+	auto file = open_input_file(2019, 7);
+
+	//const std::string values = "3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002, 33, 7, 33, 1, 33, 31, 31, 1, 32, 31, 31, 4, 31, 99, 0, 0, 0";
+	std::string values;
+	std::getline(file, values);
+
+	std::istringstream input{values};
+	auto ampA = IntcodeComputer(input);
+	input = std::istringstream{ values };
+	auto ampB = IntcodeComputer(input);
+	input = std::istringstream{ values };
+	auto ampC = IntcodeComputer(input);
+	input = std::istringstream{ values };
+	auto ampD = IntcodeComputer(input);
+	input = std::istringstream{ values };
+	auto ampE = IntcodeComputer(input);
+
+	std::vector<int> inputs = { 0, 1, 2, 3, 4 };
+	int highest = 0;
+
+	do {
+		highest = std::max(highest, ampE.run({ inputs[0], ampD.run({inputs[1], ampC.run({inputs[2], ampB.run({inputs[3], ampA.run({inputs[4], 0})})})}) }));
+	} while (std::next_permutation(inputs.begin(), inputs.end()));
+
+	return highest == 21860;
+}
+
+bool aoc_2019_7::part2()
+{
+	return false;
 }
