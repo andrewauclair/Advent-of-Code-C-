@@ -121,12 +121,16 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <EnableModules>true</EnableModules>
+      <AdditionalModuleDependencies>C:\Users\might\source\repos\poco\Foundation\src\PocoFoundation.ixx;%(AdditionalModuleDependencies)</AdditionalModuleDependencies>
+      <AdditionalIncludeDirectories>C:\Users\might\source\repos\poco\Foundation\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\might\source\repos\poco\lib64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -138,6 +142,7 @@
     <ClCompile Include="2020.cpp" />
     <ClCompile Include="2021.cpp" />
     <ClCompile Include="2022.cpp" />
+    <ClCompile Include="2023.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
@@ -150,6 +155,7 @@
     <ClInclude Include="2020.h" />
     <ClInclude Include="2021.h" />
     <ClInclude Include="2022.h" />
+    <ClInclude Include="2023.h" />
     <ClInclude Include="base_day.h" />
     <ClInclude Include="register.h" />
     <ClInclude Include="utils.h" />

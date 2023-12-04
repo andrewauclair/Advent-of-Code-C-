@@ -20,7 +20,7 @@ inline std::vector<std::string> read_lines(std::fstream& in)
 }
 
 template<typename T>
-std::vector<T> read_as(std::fstream& in)
+std::vector<T> read_as(std::istream& in)
 {
 	std::vector<T> values;
 	std::copy(std::istream_iterator<T>(in), std::istream_iterator<T>(), std::back_inserter(values));

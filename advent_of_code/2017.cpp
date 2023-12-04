@@ -1,6 +1,8 @@
 #include "2017.h"
 #include "utils.h"
 
+#include <map>
+
 bool aoc_2017_1::part1()
 {
 	auto file = open_input_file(2017, 1);
@@ -116,4 +118,70 @@ bool aoc_2017_2::part2()
 	}
 	
 	return total == 312;
+}
+
+int Spiral(int number, bool part_1 = true) {
+	int x, y, dx, dy;
+	x = y = dx = 0;
+	dy = -1;
+	int t = std::max(3, 3);
+	int X = 3;
+	int Y = 3;
+	int maxI = t * t;
+
+	int num = 1;
+	int sum = 0;
+
+	struct pos { int x; int y; };
+	
+	std::map<pos, int> values;
+
+	for (int i = 0; i < maxI; i++) {
+		if ((-X / 2 <= x) && (x <= X / 2) && (-Y / 2 <= y) && (y <= Y / 2)) {
+			if (num == number && part_1) {
+				return std::abs(x) + std::abs(y);
+			}
+			sum += num;
+
+			if (num > number) {
+				return num;
+			}
+			num++;
+		}
+		if ((x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1 - y))) {
+			t = dx;
+			X += 2;
+			Y += 2;
+			maxI = X * Y;
+			dx = -dy;
+			dy = t;
+		}
+		x += dx;
+		y += dy;
+	}
+}
+bool aoc_2017_3::part1()
+{
+	//Spiral(5, 5);
+
+	auto file = open_input_file(2017, 3);
+
+	int number;
+	file >> number;
+
+	Spiral(number);
+
+	return Spiral(number) == 430;
+}
+
+bool aoc_2017_3::part2()
+{
+	auto file = open_input_file(2017, 3);
+
+	int number;
+	file >> number;
+
+	std::cout << "( " << Spiral(number, false) << " )";
+
+	return false;
 }
