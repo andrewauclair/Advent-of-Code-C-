@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <map>
 #include <set>
+#include <deque>
 
 namespace
 {
@@ -424,4 +425,139 @@ bool aoc_2023_3::part2()
 	}
 
 	return sum == 78826761;
+}
+
+bool aoc_2023_4::part1()
+{
+	struct Card {
+		int card_number;
+		int score = 0;
+
+		std::vector<int> held_numbers;
+		std::vector<int> winning_numbers;
+	};
+
+	auto file = open_input_file(2023, 4);
+	const auto values = read_lines(file);
+
+	std::vector<Card> cards;
+
+	for (auto&& card_input : values) {
+		Card card;
+		std::string held;
+		std::string winning;
+
+		std::istringstream iss(card_input);
+
+		std::string cardNum;
+		std::getline(iss, cardNum, ':');
+		std::getline(iss, held, '|');
+		std::getline(iss, winning, '|');
+
+		trim(held);
+		trim(winning);
+
+		for (auto&& num : split_by_whitespace(held)) {
+			card.held_numbers.push_back(std::stoi(num));
+		}
+
+		for (auto&& num : split_by_whitespace(winning)) {
+			card.winning_numbers.push_back(std::stoi(num));
+		}
+
+		for (int num : card.held_numbers) {
+			if (std::find(card.winning_numbers.begin(), card.winning_numbers.end(), num) != card.winning_numbers.end()) {
+				if (card.score == 0) {
+					card.score = 1;
+				}
+				else {
+					card.score *= 2;
+				}
+			}
+		}
+		cards.push_back(card);
+	}
+
+	int sum = 0;
+
+	for (auto&& card : cards) {
+		sum += card.score;
+	}
+
+	return sum == 24160;
+}
+
+bool aoc_2023_4::part2()
+{
+	struct Card {
+		int matches = 0;
+		int copies = 0;
+
+		std::vector<int> held_numbers;
+		std::vector<int> winning_numbers;
+	};
+
+	auto file = open_input_file(2023, 4);
+	const auto values = read_lines(file);
+
+	std::map<int, Card> cards;
+
+	for (auto&& card_input : values) {
+		Card card;
+		std::string held;
+		std::string winning;
+
+		std::istringstream iss(card_input);
+
+		std::string cardNumPart;
+		std::getline(iss, cardNumPart, ':');
+		std::getline(iss, held, '|');
+		std::getline(iss, winning, '|');
+
+
+		trim(held);
+		trim(winning);
+
+		for (auto&& num : split_by_whitespace(held)) {
+			card.held_numbers.push_back(std::stoi(num));
+		}
+
+		for (auto&& num : split_by_whitespace(winning)) {
+			card.winning_numbers.push_back(std::stoi(num));
+		}
+
+		for (int num : card.held_numbers) {
+			if (std::find(card.winning_numbers.begin(), card.winning_numbers.end(), num) != card.winning_numbers.end()) {
+				card.matches++;
+			}
+		}
+		cards[std::stoi(split_by_whitespace(cardNumPart)[1])] = card;
+	}
+
+	struct Process {
+		int card_num;
+		int copies = 1;
+	};
+	std::vector<Process> cards_to_process;
+	for (int i = 1; i <= cards.size(); i++) {
+		cards_to_process.emplace_back(i, 1);
+	}
+
+	for (auto&& process : cards_to_process) {
+		Card& card = cards.at(process.card_num);
+
+		card.copies += process.copies;
+
+		for (int i = 0; i < card.matches; i++) {
+			cards_to_process.at(process.card_num + i).copies += card.copies;
+		}
+	}
+
+	int sum = 0;
+
+	for (auto&& card : cards) {
+		sum += card.second.copies;
+	}
+
+	return sum == 5659035;
 }
