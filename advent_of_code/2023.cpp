@@ -561,3 +561,204 @@ bool aoc_2023_4::part2()
 
 	return sum == 5659035;
 }
+
+bool aoc_2023_5::part1()
+{
+	struct Range {
+		std::int64_t start;
+		std::int64_t end;
+	};
+	struct Mapping {
+		Range input;
+		Range output;
+
+		Mapping(std::int64_t input_start, std::int64_t output_start, std::int64_t count)
+			: input{ input_start, input_start + count },
+			output{ output_start, output_start + count } {
+		}
+	};
+	struct Mappings {
+		std::vector<Mapping> mappings;
+
+		std::int64_t map(std::int64_t input) {
+			for (auto&& mapping : mappings) {
+				if (input >= mapping.input.start && input < mapping.input.end) {
+					return mapping.output.start + (input - mapping.input.start);
+				}
+			}
+			return input;
+		}
+	};
+
+	struct Data {
+		Mappings seed_to_soil;
+		Mappings soil_to_fertilizer;
+		Mappings fertilizer_to_water;
+		Mappings water_to_light;
+		Mappings light_to_temperature;
+		Mappings temperature_to_humidity;
+		Mappings humidity_to_location;
+
+		std::int64_t map(std::int64_t seed) {
+			auto soil = seed_to_soil.map(seed);
+			auto fertilizer = soil_to_fertilizer.map(soil);
+			auto water = fertilizer_to_water.map(fertilizer);
+			auto light = water_to_light.map(water);
+			auto temperature = light_to_temperature.map(light);
+			auto humidity = temperature_to_humidity.map(temperature);
+			auto location = humidity_to_location.map(humidity);
+
+			return location;
+		}
+	};
+
+	auto file = open_input_file(2023, 5);
+
+	std::string seeds;
+	std::getline(file, seeds);
+
+	seeds = seeds.substr(7);
+
+	std::string skip;
+	std::getline(file, skip);
+	std::getline(file, skip); // seed-to-soil map
+
+	const auto read_mapping = [&]() -> Mappings {
+		std::string line;
+		std::vector<Mapping> ranges;
+		while (std::getline(file, line))
+		{
+			if (line.empty())
+			{
+				break;
+			}
+			std::int64_t in, out, count;
+			std::sscanf(line.c_str(), "%lld %lld %lld", &out, &in, &count);
+
+			ranges.emplace_back(in, out, count);
+		}
+		return { ranges };
+	};
+
+	Data data;
+	data.seed_to_soil = read_mapping();
+	data.soil_to_fertilizer = read_mapping();
+	data.fertilizer_to_water = read_mapping();
+	data.water_to_light = read_mapping();
+	data.light_to_temperature = read_mapping();
+	data.temperature_to_humidity = read_mapping();
+	data.humidity_to_location = read_mapping();
+	
+	std::int64_t lowest_location = std::numeric_limits<std::int64_t>::max();
+	std::string seed;
+	std::istringstream iss(seeds);
+	while (iss >> seed) {
+		lowest_location = std::min(lowest_location, data.map(std::stoll(seed)));
+	}
+	return lowest_location == 240320250;
+}
+
+bool aoc_2023_5::part2()
+{
+	struct Range {
+		std::int64_t start;
+		std::int64_t end;
+	};
+	struct Mapping {
+		Range input;
+		Range output;
+
+		Mapping(std::int64_t input_start, std::int64_t output_start, std::int64_t count)
+			: input{ input_start, input_start + count },
+			output{ output_start, output_start + count } {
+		}
+	};
+	struct Mappings {
+		std::vector<Mapping> mappings;
+
+		std::int64_t map(std::int64_t input) {
+			for (auto&& mapping : mappings) {
+				if (input >= mapping.input.start && input < mapping.input.end) {
+					return mapping.output.start + (input - mapping.input.start);
+				}
+			}
+			return input;
+		}
+	};
+
+	struct Data {
+		Mappings seed_to_soil;
+		Mappings soil_to_fertilizer;
+		Mappings fertilizer_to_water;
+		Mappings water_to_light;
+		Mappings light_to_temperature;
+		Mappings temperature_to_humidity;
+		Mappings humidity_to_location;
+
+		std::int64_t map(std::int64_t seed) {
+			auto soil = seed_to_soil.map(seed);
+			auto fertilizer = soil_to_fertilizer.map(soil);
+			auto water = fertilizer_to_water.map(fertilizer);
+			auto light = water_to_light.map(water);
+			auto temperature = light_to_temperature.map(light);
+			auto humidity = temperature_to_humidity.map(temperature);
+			auto location = humidity_to_location.map(humidity);
+
+			return location;
+		}
+	};
+
+	auto file = open_input_file(2023, 5);
+
+	std::string seeds;
+	std::getline(file, seeds);
+
+	seeds = seeds.substr(7);
+
+	std::string skip;
+	std::getline(file, skip);
+	std::getline(file, skip); // seed-to-soil map
+
+	const auto read_mapping = [&]() -> Mappings {
+		std::string line;
+		std::vector<Mapping> ranges;
+		while (std::getline(file, line))
+		{
+			if (line.empty())
+			{
+				break;
+			}
+			std::int64_t in, out, count;
+			std::sscanf(line.c_str(), "%lld %lld %lld", &out, &in, &count);
+
+			ranges.emplace_back(in, out, count);
+		}
+		return { ranges };
+		};
+
+	Data data;
+	data.seed_to_soil = read_mapping();
+	data.soil_to_fertilizer = read_mapping();
+	data.fertilizer_to_water = read_mapping();
+	data.water_to_light = read_mapping();
+	data.light_to_temperature = read_mapping();
+	data.temperature_to_humidity = read_mapping();
+	data.humidity_to_location = read_mapping();
+
+	std::int64_t lowest_location = std::numeric_limits<std::int64_t>::max();
+	std::int64_t seed;
+	std::int64_t seed_count;
+	std::istringstream iss(seeds);
+	while (iss >> seed >> seed_count) {
+		std::int64_t previous_soil = 0;
+		for (std::int64_t i = seed; i < seed + seed_count; i++) {
+			std::int64_t soil = data.seed_to_soil.map(i);
+
+			if (soil != previous_soil) {
+				lowest_location = std::min(lowest_location, data.map(i));
+			}
+			previous_soil = soil;
+		}
+	}
+	return lowest_location == 28580589;
+}

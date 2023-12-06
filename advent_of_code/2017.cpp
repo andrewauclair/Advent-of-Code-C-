@@ -183,5 +183,13 @@ bool aoc_2017_3::part2()
 
 	std::cout << "( " << Spiral(number, false) << " )";
 
+	std::ifstream file2;// ("junk.txt", std::ios::in);
+	file2.open("junk.txt", std::ios::in);
+	if (!file2) {
+		std::cout << "failed to open";
+	}
+	else {
+		std::cout << "opened\n";
+	}
 	return false;
 }
