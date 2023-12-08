@@ -8,6 +8,7 @@
 #include <map>
 #include <set>
 #include <deque>
+#include <array>
 
 namespace
 {
@@ -580,7 +581,7 @@ bool aoc_2023_5::part1()
 	struct Mappings {
 		std::vector<Mapping> mappings;
 
-		std::int64_t map(std::int64_t input) {
+		std::int64_t map(std::int64_t input) const noexcept {
 			for (auto&& mapping : mappings) {
 				if (input >= mapping.input.start && input < mapping.input.end) {
 					return mapping.output.start + (input - mapping.input.start);
@@ -676,7 +677,7 @@ bool aoc_2023_5::part2()
 	struct Mappings {
 		std::vector<Mapping> mappings;
 
-		std::int64_t map(std::int64_t input) {
+		std::int64_t map(std::int64_t input) const noexcept {
 			for (auto&& mapping : mappings) {
 				if (input >= mapping.input.start && input < mapping.input.end) {
 					return mapping.output.start + (input - mapping.input.start);
@@ -695,8 +696,19 @@ bool aoc_2023_5::part2()
 		Mappings temperature_to_humidity;
 		Mappings humidity_to_location;
 
-		std::int64_t map(std::int64_t seed) {
+		std::int64_t map(std::int64_t seed) const noexcept {
 			auto soil = seed_to_soil.map(seed);
+			auto fertilizer = soil_to_fertilizer.map(soil);
+			auto water = fertilizer_to_water.map(fertilizer);
+			auto light = water_to_light.map(water);
+			auto temperature = light_to_temperature.map(light);
+			auto humidity = temperature_to_humidity.map(temperature);
+			auto location = humidity_to_location.map(humidity);
+
+			return location;
+		}
+
+		std::int64_t map_soil(std::int64_t soil) const noexcept {
 			auto fertilizer = soil_to_fertilizer.map(soil);
 			auto water = fertilizer_to_water.map(fertilizer);
 			auto light = water_to_light.map(water);
@@ -749,16 +761,650 @@ bool aoc_2023_5::part2()
 	std::int64_t seed;
 	std::int64_t seed_count;
 	std::istringstream iss(seeds);
+
+	std::set<std::int64_t> soil_values;
+
 	while (iss >> seed >> seed_count) {
-		std::int64_t previous_soil = 0;
+		for (std::int64_t i = seed; i < seed + seed_count; i++)
+		{
+			soil_values.insert(data.seed_to_soil.map(i));
+		}
+	}
+
+	for (std::int64_t soil : soil_values)
+	{
 		for (std::int64_t i = seed; i < seed + seed_count; i++) {
 			std::int64_t soil = data.seed_to_soil.map(i);
 
-			if (soil != previous_soil) {
+			//if (soil != previous_soil) 
+			{
 				lowest_location = std::min(lowest_location, data.map(i));
 			}
-			previous_soil = soil;
 		}
 	}
 	return lowest_location == 28580589;
+}
+
+bool aoc_2023_6::part1()
+{
+	auto file = open_input_file(2023, 6);
+
+	std::string times;
+	std::string distances;
+
+	std::getline(file, times);
+	std::getline(file, distances);
+
+	times = times.substr(5);
+	distances = distances.substr(9);
+
+	std::istringstream iss_times(times);
+	std::istringstream iss_distances(distances);
+
+	struct Race {
+		int time;
+		int distance;
+	};
+
+	int time;
+	int record_distance;
+
+	int mult = 1;
+
+	while (iss_times >> time && iss_distances >> record_distance)
+	{
+		int winners = 0;
+
+		for (int i = 1; i < time; i++)
+		{
+			int distance = i * (time - i);
+
+			if (distance > record_distance)
+			{
+				winners++;
+			}
+		}
+
+		mult *= winners;
+	}
+
+	return mult == 503424;
+}
+
+bool aoc_2023_6::part2()
+{
+	auto file = open_input_file(2023, 6);
+
+	std::string times;
+	std::string distances;
+
+	std::getline(file, times);
+	std::getline(file, distances);
+
+	times = times.substr(5);
+	distances = distances.substr(9);
+
+	times.erase(std::remove_if(times.begin(), times.end(), isspace), times.end());
+	distances.erase(std::remove_if(distances.begin(), distances.end(), isspace), distances.end());
+
+	std::int64_t time = std::stoll(times);
+	std::int64_t record_distance = std::stoll(distances);
+
+	std::int64_t winners = 0;
+
+	for (std::int64_t i = 1; i < time; i++)
+	{
+		std::int64_t distance = i * (time - i);
+
+		if (distance > record_distance)
+		{
+			winners++;
+		}
+	}
+
+	return winners == 32607562;
+}
+
+bool aoc_2023_7::part1()
+{
+	enum class Card
+	{
+		_2 = 2,_3,_4,_5,_6,_7,_8,_9,
+		T,J,Q,K,A
+	};
+	enum class Hand_Kind
+	{
+		high_card,
+		one_pair,
+		two_pair,
+		three_of_a_kind,
+		full_house,
+		four_of_a_kind,
+		five_of_a_kind,
+	};
+	struct Hand
+	{
+	private:
+		std::array<Card, 5> cards;
+		int m_bid = 0;
+		Hand_Kind kind;
+
+		bool is_five_of_a_kind() const
+		{
+			std::set<Card> set_of_cards{ cards.begin(), cards.end() };
+
+			return set_of_cards.size() == 1;
+		}
+
+		bool is_four_of_a_kind() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 4)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool is_full_house() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			int two_count = 0;
+			int three_count = 0;
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 2) two_count++;
+				if (count == 3) three_count++;
+			}
+			return two_count == 1 && three_count == 1;
+		}
+
+		bool is_three_of_a_kind() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 3)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool is_two_pair() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			int two_count = 0;
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 2) two_count++;
+			}
+			return two_count == 2;
+		}
+
+		bool is_one_pair() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			int two_count = 0;
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 2) two_count++;
+			}
+			return two_count == 1;
+		}
+
+	public:
+		Hand(std::array<Card, 5> cards, int bid) : cards(std::move(cards)), m_bid(bid)
+		{
+			//std::sort(this->cards.begin(), this->cards.end());
+
+			if (is_five_of_a_kind())
+			{
+				kind = Hand_Kind::five_of_a_kind;
+			}
+			else if (is_four_of_a_kind())
+			{
+				kind = Hand_Kind::four_of_a_kind;
+			}
+			else if (is_full_house())
+			{
+				kind = Hand_Kind::full_house;
+			}
+			else if (is_three_of_a_kind())
+			{
+				kind = Hand_Kind::three_of_a_kind;
+			}
+			else if (is_two_pair())
+			{
+				kind = Hand_Kind::two_pair;
+			}
+			else if (is_one_pair())
+			{
+				kind = Hand_Kind::one_pair;
+			}
+			else
+			{
+				kind = Hand_Kind::high_card;
+			}
+		}
+
+		int bid() const { return m_bid; }
+
+		bool operator<(const Hand& other) const 
+		{
+			if (kind < other.kind) return true;
+			else if (kind != other.kind) return false;
+
+			for (int i = 0; i < 5; i++)
+			{
+				if (cards[i] < other.cards[i]) return true;
+				else if (cards[i] != other.cards[i]) return false;
+			}
+			return true;
+		}
+	};
+
+	auto file = open_input_file(2023, 7);
+	std::string hand_str;
+	int bid;
+
+	std::vector<Hand> hands;
+
+	while (file >> hand_str >> bid)
+	{
+		const auto char_to_card = [&](char ch) {
+			switch (ch)
+			{
+			default:
+			case '2': return Card::_2;
+			case'3': return Card::_3;
+			case '4': return Card::_4;
+			case'5': return Card::_5;
+			case '6':return Card::_6;
+			case '7':return Card::_7;
+			case '8':return Card::_8;
+			case '9':return Card::_9;
+			case 'T':return Card::T;
+			case 'J':return Card::J;
+			case 'Q':return Card::Q;
+			case 'K':return Card::K;
+			case 'A':return Card::A;
+			}
+			
+			};
+		std::array<Card, 5> cards{ 
+			char_to_card(hand_str[0]),
+			char_to_card(hand_str[1]),
+			char_to_card(hand_str[2]),
+			char_to_card(hand_str[3]),
+			char_to_card(hand_str[4]),
+			};
+		Hand hand{ cards, bid };
+
+		hands.push_back(hand);
+	}
+
+	std::sort(hands.begin(), hands.end());
+
+	int total = 0;
+
+	for (int i = 1; i <= hands.size(); i++)
+	{
+		total += i * hands[i - 1].bid();
+	}
+
+	return total == 248113761;
+}
+
+bool aoc_2023_7::part2()
+{
+	enum class Card
+	{
+		J, _2, _3, _4, _5, _6, _7, _8, _9,
+		T, Q, K, A
+	};
+	enum class Hand_Kind
+	{
+		high_card,
+		one_pair,
+		two_pair,
+		three_of_a_kind,
+		full_house,
+		four_of_a_kind,
+		five_of_a_kind,
+	};
+	struct Hand
+	{
+	private:
+		std::array<Card, 5> cards;
+		int m_bid = 0;
+		Hand_Kind kind;
+
+		bool is_five_of_a_kind() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 5)
+				{
+					return true;
+				}
+				else if (card != Card::J && count + counts[Card::J] >= 5)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool is_four_of_a_kind() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 4)
+				{
+					return true;
+				}
+				else if (card != Card::J && count + counts[Card::J] >= 4)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool is_full_house() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			bool has_two = false;
+			bool has_three = false;
+			int two_count = 0;
+			int three_count = 0;
+			for (auto&& [card, count] : counts)
+			{
+				if (card == Card::J) continue;
+
+				if (count == 2) {
+					has_two = true;
+					two_count++;
+				}
+				if (count == 3) {
+					has_three = true;
+					three_count++;
+				}
+			}
+			if (has_two && has_three)
+			{
+				return true;
+			}
+			else
+			{
+				// try to create a full house with Jokers
+				if (counts[Card::J] == 0) return false;
+
+				if (counts.size() < 3) return false;
+
+				int breakpoint = 0;
+
+				if (has_two && !has_three && two_count >= 2)
+				{
+					return true;
+				}
+				else if (!has_two && has_three)
+				{
+					for (auto&& [card, count] : counts)
+					{
+						if (card == Card::J) continue;
+
+						if (count == 1) return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		bool is_three_of_a_kind() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 3)
+				{
+					return true;
+				}
+				else if (card != Card::J && count + counts[Card::J] >= 3)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool is_two_pair() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			int two_count = 0;
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 2) two_count++;
+			}
+			if (two_count == 2)
+			{
+				return true;
+			}
+			else if (two_count == 1)
+			{
+				for (auto&& [card, count] : counts)
+				{
+					if (count == 1 && card != Card::J && counts[Card::J] >= 1)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		bool is_one_pair() const
+		{
+			std::map<Card, int> counts;
+
+			for (Card card : cards)
+			{
+				counts[card]++;
+			}
+
+			int two_count = 0;
+			for (auto&& [card, count] : counts)
+			{
+				if (count == 2) two_count++;
+			}
+			if (two_count == 1)
+			{
+				return true;
+			}
+			else
+			{
+				Card high_card = Card::J;
+
+				for (auto&& [card, count] : counts)
+				{
+					if (count == 1 && card != Card::J && card > high_card)
+					{
+						high_card = card;
+					}
+				}
+
+				if (high_card != Card::J && counts[Card::J] >= 1)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+	public:
+		Hand(std::array<Card, 5> cards, int bid) : cards(std::move(cards)), m_bid(bid)
+		{
+			if (is_five_of_a_kind())
+			{
+				kind = Hand_Kind::five_of_a_kind;
+			}
+			else if (is_four_of_a_kind())
+			{
+				kind = Hand_Kind::four_of_a_kind;
+			}
+			else if (is_full_house())
+			{
+				kind = Hand_Kind::full_house;
+			}
+			else if (is_three_of_a_kind())
+			{
+				kind = Hand_Kind::three_of_a_kind;
+			}
+			else if (is_two_pair())
+			{
+				kind = Hand_Kind::two_pair;
+			}
+			else if (is_one_pair())
+			{
+				kind = Hand_Kind::one_pair;
+			}
+			else
+			{
+				kind = Hand_Kind::high_card;
+			}
+		}
+
+		int bid() const { return m_bid; }
+
+		bool operator<(const Hand& other) const
+		{
+			if (kind < other.kind) return true;
+			else if (kind != other.kind) return false;
+
+			for (int i = 0; i < 5; i++)
+			{
+				if (cards[i] < other.cards[i]) return true;
+				else if (cards[i] != other.cards[i]) return false;
+			}
+			return true;
+		}
+	};
+
+	auto file = open_input_file(2023, 7);
+	std::string hand_str;
+	int bid;
+
+	std::vector<Hand> hands;
+
+	while (file >> hand_str >> bid)
+	{
+		const auto char_to_card = [&](char ch) {
+			switch (ch)
+			{
+			default:
+			case '2': return Card::_2;
+			case'3': return Card::_3;
+			case '4': return Card::_4;
+			case'5': return Card::_5;
+			case '6':return Card::_6;
+			case '7':return Card::_7;
+			case '8':return Card::_8;
+			case '9':return Card::_9;
+			case 'T':return Card::T;
+			case 'J':return Card::J;
+			case 'Q':return Card::Q;
+			case 'K':return Card::K;
+			case 'A':return Card::A;
+			}
+
+			};
+		std::array<Card, 5> cards{
+			char_to_card(hand_str[0]),
+			char_to_card(hand_str[1]),
+			char_to_card(hand_str[2]),
+			char_to_card(hand_str[3]),
+			char_to_card(hand_str[4]),
+		};
+		Hand hand{ cards, bid };
+
+		hands.push_back(hand);
+	}
+
+	std::sort(hands.begin(), hands.end());
+
+	int total = 0;
+
+	for (int i = 1; i <= hands.size(); i++)
+	{
+		total += i * hands[i - 1].bid();
+	}
+
+	return total == 246285222;
 }
