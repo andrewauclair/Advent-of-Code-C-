@@ -9,6 +9,7 @@
 #include <set>
 #include <deque>
 #include <array>
+#include <functional>
 
 namespace
 {
@@ -764,24 +765,24 @@ bool aoc_2023_5::part2()
 
 	std::set<std::int64_t> soil_values;
 
-	while (iss >> seed >> seed_count) {
-		for (std::int64_t i = seed; i < seed + seed_count; i++)
-		{
-			soil_values.insert(data.seed_to_soil.map(i));
-		}
-	}
+	//while (iss >> seed >> seed_count) {
+	//	for (std::int64_t i = seed; i < seed + seed_count; i++)
+	//	{
+	//		soil_values.insert(data.seed_to_soil.map(i));
+	//	}
+	//}
 
-	for (std::int64_t soil : soil_values)
-	{
-		for (std::int64_t i = seed; i < seed + seed_count; i++) {
-			std::int64_t soil = data.seed_to_soil.map(i);
+	//for (std::int64_t soil : soil_values)
+	//{
+	//	for (std::int64_t i = seed; i < seed + seed_count; i++) {
+	//		std::int64_t soil = data.seed_to_soil.map(i);
 
-			//if (soil != previous_soil) 
-			{
-				lowest_location = std::min(lowest_location, data.map(i));
-			}
-		}
-	}
+	//		//if (soil != previous_soil) 
+	//		{
+	//			lowest_location = std::min(lowest_location, data.map(i));
+	//		}
+	//	}
+	//}
 	return lowest_location == 28580589;
 }
 
@@ -1407,4 +1408,197 @@ bool aoc_2023_7::part2()
 	}
 
 	return total == 246285222;
+}
+
+bool aoc_2023_8::part1()
+{
+	auto file = open_input_file(2023, 8);
+
+	std::string directions;
+	std::getline(file, directions);
+
+	std::string empty;
+	std::getline(file, empty);
+
+	std::map<std::string, std::pair<std::string, std::string>> maze;
+
+	std::string mapping;
+
+	while (std::getline(file, mapping))
+	{
+		std::string step = mapping.substr(0, 3);
+		std::string left = mapping.substr(7, 3);
+		std::string right = mapping.substr(12, 3);
+
+		maze[step] = std::make_pair(left, right);
+	}
+
+	bool found_end = false;
+	std::string current = "AAA";
+
+	std::size_t instruction_index = 0;
+	int steps = 0;
+
+	while (!found_end)
+	{
+		steps++;
+
+		current = directions[instruction_index] == 'L' ? maze[current].first : maze[current].second;
+
+		if (current == "ZZZ")
+		{
+			break;
+		}
+		if (instruction_index + 1 >= directions.size())
+		{
+			instruction_index = 0;
+		}
+		else
+		{
+			++instruction_index;
+		}
+	}
+
+	return steps == 18113;
+}
+
+bool aoc_2023_8::part2()
+{
+	auto file = open_input_file(2023, 8);
+
+	static std::string directions;
+	std::getline(file, directions);
+
+	std::string empty;
+	std::getline(file, empty);
+
+	static std::map<std::string, std::pair<std::string, std::string>> maze;
+	std::vector<std::string> starting_positions;
+
+	std::string mapping;
+
+	while (std::getline(file, mapping))
+	{
+		std::string step = mapping.substr(0, 3);
+		std::string left = mapping.substr(7, 3);
+		std::string right = mapping.substr(12, 3);
+
+		maze[step] = std::make_pair(left, right);
+
+		if (step.ends_with("A"))
+		{
+			starting_positions.push_back(step);
+		}
+	}
+
+	bool found_end = false;
+	std::vector<std::string> current_positions = starting_positions;
+
+	std::size_t instruction_index = 0;
+	int steps = 0;
+
+	struct Data
+	{
+		std::string current;
+		std::size_t instruction_index = 0;
+		std::int64_t steps = 0;
+
+		void step()
+		{
+			steps++;
+
+			current = directions[instruction_index] == 'L' ? maze[current].first : maze[current].second;
+
+			if (instruction_index + 1 >= directions.size())
+			{
+				instruction_index = 0;
+			}
+			else
+			{
+				++instruction_index;
+			}
+		}
+		
+		std::int64_t step_till_z()
+		{
+			std::int64_t current_steps = steps;
+
+			step();
+			while (current[2] != 'Z')
+			{
+				step();
+			}
+
+			return steps - current_steps;
+		}
+
+		void jump(std::int64_t steps)
+		{
+			for (std::int64_t i = 0; i < steps; i++)
+			{
+				step();
+			}
+		}
+	};
+
+	std::vector<Data> data;
+	
+	for (const std::string& current : starting_positions)
+	{
+		data.push_back(Data{ current });
+	}
+
+	int prev_stepped = -1;
+	int index = 0;
+	int shortest = std::numeric_limits<int>::max();
+	int longest = 0;
+	std::vector<std::int64_t> values;
+
+	while (true)
+	{
+		int stepped = data[index].step_till_z();
+
+		if (stepped == prev_stepped)
+		{
+			values.push_back(stepped);
+
+			if (stepped < shortest) shortest = stepped;
+			if (stepped > longest) longest = stepped;
+
+			std::cout << "index " << index << " cycle: " << stepped << "\n";
+			index++;
+			if (index >= data.size())break;
+			continue;
+		}
+		prev_stepped = stepped;
+		std::cout << stepped << "\n";
+	}
+	
+	std::function<std::pair<std::int64_t, std::int64_t>(std::int64_t, std::int64_t)> gcd;
+
+	gcd = [&gcd](std::int64_t a, std::int64_t b) -> std::pair<std::int64_t, std::int64_t> {
+		while (a > 0 && b > 0)
+		{
+			auto result = gcd(b, a % b);
+			a = result.first;
+			b = result.second;
+		}
+		return { b, a };
+	};
+
+	auto f = gcd(48, 18);
+
+	std::vector<std::int64_t> initial_values = values;
+	std::int64_t total = 0;
+	std::cout << '\n';
+	for (int i = 0; i < values.size(); i++)
+	{
+		std::cout << values[i] << '\n';
+	}
+
+	// least common multiple
+	// 12315788159977 -- answer
+	std::cout << "\n\nfinal: " << total << "\n\n";
+
+	return false;
 }
